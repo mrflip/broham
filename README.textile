@@ -1,9 +1,6 @@
 h2. Broham: A simple, global, highly-available, none-too-bright service registry.
 
-**Broham always knows where his bros are, bro!** Using broham, a
-newly-created cloud machine can annouce its availability for a certain role
-("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover
-its public_ip, private_ip, etc.
+**Broham always knows where his bros are, bro!** Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc.
 
 Examples:
 
@@ -19,21 +16,21 @@ Examples:
 
   # On NFS server start, register an nfs share
   Chad.register_nfs_share '/home'
-  #=> #<Chad @attributes={"timestamp"=>["20100405072638"], "client_path"=>["/home"], "server_path"=>["/home"], "role"=>["nfs_server"], "default_ip"=>["192.168.69.22"]}
+  #=> #<Chad @attributes={"timestamp"=>["20100405072638"], "client_path"=>["/home"], "server_path"=>["/home"], "role"=>["nfs_server"], "public_ip"=>["250.249.248.247"], "private_ip"=>["192.168.69.22"], "default_ip"=>["192.168.69.22"]}
   # On the nfs clients, get the local IP and server-side path of the share, ready to insert into /etc/fstab
   Chad.nfs_device_path 
   #=> "192.168.69.22:/home"
 
   # Register as one of many nodes with a given role
   Chad.register_as_next 'dj'
-  #=> #<Chad @attributes={"timestamp"=>["20100405072931"], "role"=>["dj-1"], "idx"=>["1"], "default_ip"=>["192.168.69.10"]}
+  #=> #<Chad @attributes={"timestamp"=>["20100405072931"], "role"=>["dj-1"], "idx"=>["1"], "default_ip"=>["192.168.69.10"], "public_ip"=>["250.249.248.247"], "private_ip"=>["192.168.69.10"]}
   
   # Find the highest-yet-registered node in the 'dj' role and immediately
-  # register as the next one. Even if a herd of hosts try to register in this
-  # role, Broham will ensure that exactly one host claims each index.
+  # register as the next one. Even if a thundering herd of hosts try to register
+  # in this role, Broham will ensure that exactly one host claims each index.
   Chad.host('dj') ; Chad.register_as_next 'dj'
-  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj"], "idx"=>["2"], "default_ip"=>["192.168.69.14"]}]
-  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj-4"], "idx"=>["4"], "default_ip"=>["192.168.69.22"]}
+  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj"], "idx"=>["2"], "default_ip"=>["192.168.69.14"], "public_ip"=>["250.249.248.247"], "private_ip"=>["192.168.69.14"]}]
+  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj-4"], "idx"=>["4"], "default_ip"=>["192.168.69.22"], "public_ip"=>["250.249.248.247"], "private_ip"=>["192.168.69.22"]}]
 </code></pre>
 
 Alternate interface:
@@ -56,17 +53,13 @@ For setup, we recommend configliere
 
 h3. 
 
-bq. Like Broseph Stalin, you are leading the way to the dictatorship of the
-broletariate. It is truly revbrolutionary. Like the Bro v. Wade of our
-generation. You brobliterate the enemy from the very peak of
-Mt. Brolympus. That's some shit. That's brolific. But that's the kind of bro you
-are. -- "Zach Caldwell":http://j.mp/amongbros
+bq. Like Broseph Stalin, you are leading the way to the dictatorship of the broletariate. It is truly revbrolutionary. Like the Bro v. Wade of our generation. You brobliterate the enemy from the very peak of Mt. Brolympus. That's some shit. That's brolific. But that's the kind of bro you are. -- "Zach Caldwell":http://j.mp/amongbros
 
 
 h3. Warnings!
 
-Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the
-SDB_API_VERSION environment variable to '2009-04-15':
+Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the SDB_API_VERSION environment variable to '2009-04-15':
+
 <pre><code>
   export SDB_API_VERSION='2009-04-15'
 </code></pre>
@@ -78,10 +71,8 @@ h3. Note on Patches/Pull Requests
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Add tests for it. This is important so I don't break it in a future version unintentionally.
+* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 h3. Copyright
