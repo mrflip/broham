@@ -6,6 +6,7 @@ cloud machine can annouce its availability for a certain role ("nfs_server" or
 private_ip, etc.
 
 Examples:
+<pre><code>
     require 'broham'
     Settings.access_key_id     = 'XXXXXXXXXX'
     Settings.secret_access_key = 'XXXXXXXXXX'
@@ -32,21 +33,25 @@ Examples:
     Chad.host('dj') ; Chad.register_as_next 'dj'
     #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj"], "idx"=>["2"], "default_ip"=>["192.168.69.14"]}]
     #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj-4"], "idx"=>["4"], "default_ip"=>["192.168.69.22"]}
+</code></pre>
 
 Alternate interface:
 
+<pre><code>
     Chad.yo! 'beer-stand'
     #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
 
     Chad.sup? 'beer-stand'
     #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
+</code></pre>
 
 For setup, we recommend configliere
     
+<pre><code>
     require 'configliere'
     Configliere.use :config_file
     Settings.read 'broham.yaml'; Settings.resolve!
-
+</code></pre>
 
 h3. 
 
@@ -61,7 +66,9 @@ h3. Warnings!
 
 Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the
 SDB_API_VERSION environment variable to '2009-04-15':
+<pre><code>
   export SDB_API_VERSION='2009-04-15'
+</code></pre>
 
 For @register_as_next@, you'll need a version of right_aws that supports conditional puts: http://github.com/mrflip/right_aws
   
