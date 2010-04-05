@@ -50,20 +50,20 @@ Alternate interface:
 h4. Commandline Interface
 
 <pre><code>
-  $ broham-register chad nfs_server  --set-path=/home
-  Registering as nfs_server in chad cluster, with {:path=>"/home"}
-  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+  $ broham-register chad nfs_server --set-server_path=/home --set-client_path=/home
+  Registering as nfs_server in chad cluster, with {:server_path=>"/home", :client_path=>"/home"}
+  {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
 
   $ broham-host chad nfs_server
-  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+  {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
 
   # Alternative interface works too.
   $ broham-sup chad nfs_server
-  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+  {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
 
   $ broham-unregister-all chad nfs_server
   Removing nfs_server from chad cluster
-  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+  {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
 </code></pre>
 
 h4. Setup

@@ -5,29 +5,31 @@
 
 Gem::Specification.new do |s|
   s.name = %q{broham}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
   s.date = %q{2010-04-05}
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
-  s.executables = %w[broham-host broham-register broham-sup broham-yo]
+  s.executables = ["broham-host", "broham-register", "broham-register_as_next", "broham-unregister-all"]
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc",
      "README.textile"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
-     "README.rdoc",
      "README.textile",
      "Rakefile",
      "VERSION",
+     "bin/broham-host",
+     "bin/broham-register",
+     "bin/broham-unregister-all",
      "broham.gemspec",
      "lib/broham.rb",
+     "lib/broham/script.rb",
      "spec/broham_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
