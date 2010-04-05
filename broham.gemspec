@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "broham.gemspec",
      "lib/broham.rb",
      "spec/broham_spec.rb",
      "spec/spec.opts",
