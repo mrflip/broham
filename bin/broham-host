@@ -4,9 +4,9 @@ require 'broham'
 require 'broham/script'
 require 'json'
 
-cluster = Broham.get_cluster_settings
-cluster_name, role_name = [Settings[:cluster_name], Settings[:role_name]]
+Broham.get_cluster_settings
+role_name = Settings[:role_name]
 
-$stderr.puts %Q{Retrieving '#{role_name}' for cluster '#{cluster_name}'}
-resp = cluster.host role_name
+$stderr.puts %Q{Retrieving '#{role_name}'}
+resp = Broham.host role_name
 $stderr.puts resp.to_pretty_json

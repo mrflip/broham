@@ -3,10 +3,11 @@ require 'rubygems'
 require 'broham'
 require 'broham/script'
 
-cluster = Broham.get_cluster_settings
-cluster_name, role_name = [Settings[:cluster_name], Settings[:role_name] ]
 
-$stderr.puts %Q{Removing all #{role_name} from #{cluster_name} cluster}
-resps = cluster.unregister_all role_name
+Broham.get_cluster_settings
+role_name = Settings[:role_name]
+
+$stderr.puts %Q{Removing all #{role_name}}
+resps = Broham.unregister_all role_name
 $stderr.puts resps.map{|resp| resp.to_pretty_json }
 
