@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.date = %q{2010-04-05}
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
+  s.executables = %w[broham-host broham-register broham-sup broham-yo]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc",

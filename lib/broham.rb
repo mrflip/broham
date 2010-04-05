@@ -8,7 +8,7 @@ OHAI_INFO = Ohai::System.new unless defined?(OHAI_INFO)
 OHAI_INFO.all_plugins
 # Settings from Configliere
 require 'configliere'; Configliere.use :define
-Settings.define :access_key_id,     :required => true, :description => "Amazon AWS access key ID -- found in your AWS console (http://bit.ly/awsconsole)"
+Settings.define :access_key,        :required => true, :description => "Amazon AWS access key ID     -- found in your AWS console (http://bit.ly/awsconsole)"
 Settings.define :secret_access_key, :required => true, :description => "Amazon AWS secret access key -- found in your AWS console (http://bit.ly/awsconsole)"
 
 #
@@ -129,5 +129,20 @@ module Broham
     def self.cloudera_desktop( role='cloudera_desktop')  ; host(role) ; end
 
     def to_hash() attributes ; end
+    def to_pretty_json
+      to_hash.reject{|k,v| k.to_s == 'id'}.to_json
+    end
+
+  end
+
+
+  #
+  # Metaprogramming
+  #
+  def self.new cluster
+    cluster_klass = '::'+Extlib::Inflection.classify(cluster.to_s)
+    module_eval(%Q{ class #{cluster_klass} < Broham::Cluster ; end })
+    cluster_klass.constantize rescue nil
   end
 end
+

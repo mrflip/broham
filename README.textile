@@ -47,6 +47,27 @@ Alternate interface:
   #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
 </code></pre>
 
+h4. Commandline Interface
+
+<pre><code>
+  $ broham-register chad nfs_server  --set-path=/home
+  Registering as nfs_server in chad cluster, with {:path=>"/home"}
+  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+
+  $ broham-host chad nfs_server
+  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+
+  # Alternative interface works too.
+  $ broham-sup chad nfs_server
+  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+
+  $ broham-unregister-all chad nfs_server
+  Removing nfs_server from chad cluster
+  {"timestamp":["20100405092638"],"role":["nfs_server"],"path":["/home"],"default_ip":["192.168.69.22"]}
+</code></pre>
+
+h4. Setup
+
 For setup, we recommend configliere
     
 <pre><code>
@@ -68,7 +89,7 @@ Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the S
   export SDB_API_VERSION='2009-04-15'
 </code></pre>
 
-For @register_as_next@, you'll need a version of right_aws that supports conditional puts: http://github.com/mrflip/right_aws
+For @register_as_next@, you'll need a version of right_aws that supports conditional puts: "http://github.com/mrflip/right_aws":http://github.com/mrflip/right_aws
   
 
 h3. Note on Patches/Pull Requests
