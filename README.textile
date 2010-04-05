@@ -1,57 +1,57 @@
-h2. Broham: A simple, global, highly-available, none-too-bright service registry. Broham always knows where his bros are, bro.
+h2. Broham: A simple, global, highly-available, none-too-bright service registry.
 
-Bro! Broham always knows where his bros are, bro. Using broham, a newly-created
-cloud machine can annouce its availability for a certain role ("nfs_server" or
-"db_slave-2"), allowing any other interested nodes to discover its public_ip,
-private_ip, etc.
+**Broham always knows where his bros are, bro!** Using broham, a
+newly-created cloud machine can annouce its availability for a certain role
+("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover
+its public_ip, private_ip, etc.
 
 Examples:
 
 <pre><code>
-    require 'broham'
-    Settings.access_key_id     = 'XXXXXXXXXX'
-    Settings.secret_access_key = 'XXXXXXXXXX'
+  require 'broham'
+  Settings.access_key_id     = 'XXXXXXXXXX'
+  Settings.secret_access_key = 'XXXXXXXXXX'
 
-    # create a context for the 'chad' cluster
-    class Chad < Broham::Cluster ; end
-    Chad.establish_connection
-    Chad.create_domain
+  # create a context for the 'chad' cluster
+  class Chad < Broham::Cluster ; end
+  Chad.establish_connection
+  Chad.create_domain
 
-    # On NFS server start, register an nfs share
-    Chad.register_nfs_share '/home'
-    #=> #<Chad @attributes={"timestamp"=>["20100405072638"], "client_path"=>["/home"], "server_path"=>["/home"], "role"=>["nfs_server"], "default_ip"=>["192.168.69.22"]}
-    # On the nfs clients, get the local IP and server-side path of the share, ready to insert into /etc/fstab
-    Chad.nfs_device_path 
-    #=> "192.168.69.22:/home"
+  # On NFS server start, register an nfs share
+  Chad.register_nfs_share '/home'
+  #=> #<Chad @attributes={"timestamp"=>["20100405072638"], "client_path"=>["/home"], "server_path"=>["/home"], "role"=>["nfs_server"], "default_ip"=>["192.168.69.22"]}
+  # On the nfs clients, get the local IP and server-side path of the share, ready to insert into /etc/fstab
+  Chad.nfs_device_path 
+  #=> "192.168.69.22:/home"
 
-    # Register as one of many nodes with a given role
-    Chad.register_as_next 'dj'
-    #=> #<Chad @attributes={"timestamp"=>["20100405072931"], "role"=>["dj-1"], "idx"=>["1"], "default_ip"=>["192.168.69.10"]}
-    
-    # Find the highest-yet-registered node in the 'dj' role and immediately
-    # register as the next one. Even if a herd of hosts try to register in this
-    # role, Broham will ensure that exactly one host claims each index.
-    Chad.host('dj') ; Chad.register_as_next 'dj'
-    #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj"], "idx"=>["2"], "default_ip"=>["192.168.69.14"]}]
-    #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj-4"], "idx"=>["4"], "default_ip"=>["192.168.69.22"]}
+  # Register as one of many nodes with a given role
+  Chad.register_as_next 'dj'
+  #=> #<Chad @attributes={"timestamp"=>["20100405072931"], "role"=>["dj-1"], "idx"=>["1"], "default_ip"=>["192.168.69.10"]}
+  
+  # Find the highest-yet-registered node in the 'dj' role and immediately
+  # register as the next one. Even if a herd of hosts try to register in this
+  # role, Broham will ensure that exactly one host claims each index.
+  Chad.host('dj') ; Chad.register_as_next 'dj'
+  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj"], "idx"=>["2"], "default_ip"=>["192.168.69.14"]}]
+  #=> #<Chad @attributes={"timestamp"=>["20100405073626"], "role"=>["dj-4"], "idx"=>["4"], "default_ip"=>["192.168.69.22"]}
 </code></pre>
 
 Alternate interface:
 
 <pre><code>
-    Chad.yo! 'beer-stand'
-    #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
+  Chad.yo! 'beer-stand'
+  #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
 
-    Chad.sup? 'beer-stand'
-    #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
+  Chad.sup? 'beer-stand'
+  #<Chad @attributes={"timestamp"=>["20100405071446"], "role"=>["beer-stand"], "public_ip"=>["250.249.248.247"], "private_ip"=>["10.0.69.69"]}
 </code></pre>
 
 For setup, we recommend configliere
     
 <pre><code>
-    require 'configliere'
-    Configliere.use :config_file
-    Settings.read 'broham.yaml'; Settings.resolve!
+  require 'configliere'
+  Configliere.use :config_file
+  Settings.read 'broham.yaml'; Settings.resolve!
 </code></pre>
 
 h3. 
