@@ -2,6 +2,10 @@ h2. Broham: A simple, global, highly-available, none-too-bright service registry
 
 **Broham always knows where his bros are, bro!** Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc.
 
+It uses Amazon's SimpleDB service, so the registry is global, highly-available, secure, accessible from any programming language (or even @curl@ if you're clever), and simple. As for Broham himself, he fills out a suit OK but isn't too bright: there's no monitoring or logging, for instance.
+
+Broham plays nicely with "Chef":http://github.com/opscode/chef and indeed was written to coordinate node assignment for a "hadoop cluster chef setup.":http://github.com/mrflip/hadoop_cluster_chef
+
 Examples:
 
 <pre><code>
