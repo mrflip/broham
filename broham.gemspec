@@ -14,13 +14,15 @@ Gem::Specification.new do |s|
   s.email = %q{flip@infochimps.org}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.rdoc",
+     "README.textile"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
      "README.rdoc",
+     "README.textile",
      "Rakefile",
      "VERSION",
      "broham.gemspec",
