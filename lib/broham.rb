@@ -59,7 +59,7 @@ class Broham < RightAws::ActiveSdb::Base
     100.times do
       ahost = host(role) || new
       current_max_idx = ahost[:idx] && ahost[:idx].first
-      my_idx          = (current_max_idx.to_i + 1)
+      my_idx          = current_max_idx ? current_max_idx.to_i + 1 : 0
       ahost.attributes = host_attrs(role).merge({ :idx => my_idx.to_s }.merge(attrs))
       expected = current_max_idx ? {:idx => (current_max_idx.to_i + rand(5)).to_s} : {}
       success = ahost.save_if(expected)

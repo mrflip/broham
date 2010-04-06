@@ -47,8 +47,8 @@ Gem::Specification.new do |s|
     "spec/broham_spec.rb",
      "spec/spec_helper.rb"
   ]
-  s.add_dependency('configliere')
-  s.add_dependency('right_aws')
+  s.add_dependency('configliere', [">= 0.0.6"])
+  s.add_dependency('right_aws', [">= 1.10.0"])
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
