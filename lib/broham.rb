@@ -59,10 +59,10 @@ class Broham < RightAws::ActiveSdb::Base
     if (registered_entry = entry_for_role(role)) then return registered_entry end
     100.times do
       ahost = host(role) || new
-      current_max_idx = ahost[:idx] && ahost[:idx].first
-      my_idx          = current_max_idx ? current_max_idx.to_i + 1 : 0
+      current_max_idx  = ahost[:idx] && ahost[:idx].first
+      my_idx           = current_max_idx ? current_max_idx.to_i + 1 : 0
       ahost.attributes = host_attrs(role).merge({ :idx => my_idx.to_s }.merge(attrs))
-      expected = current_max_idx ? {:idx => (current_max_idx.to_i + rand(5)).to_s} : {}
+      expected         = current_max_idx ? {:idx => (current_max_idx.to_i).to_s} : {}
       registered_entry = ahost.save_if(expected)
       break if registered_entry
     end
