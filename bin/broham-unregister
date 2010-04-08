@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'broham'
+require 'broham/script'
+
+Broham.get_cluster_settings
+role_name = Settings[:role_name]
+
+$stderr.puts %Q{Removing #{role_name}}
+resps = Broham.unregister role_name
+$stderr.puts resps.map{|resp| resp.to_pretty_json }
+

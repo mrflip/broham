@@ -7,7 +7,7 @@ require 'broham/script'
 Broham.get_cluster_settings
 role_name = Settings[:role_name]
 
-$stderr.puts %Q{Removing all #{role_name}}
-resps = Broham.unregister_all role_name
+$stderr.puts %Q{Removing all like #{role_name}}
+resps = Broham.unregister_like role_name
 $stderr.puts resps.map{|resp| resp.to_pretty_json }
 

@@ -66,6 +66,18 @@ h4. Commandline Interface
   {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
 </code></pre>
 
+h4. IRB Usage
+
+<pre><code>
+    require 'configliere'
+    Settings.read('broham.yaml')
+    require 'broham'
+    require 'broham/script'
+    Broham.establish_connection
+
+    Broham.unregister_like 'gibbon-slave'
+</code></pre>
+
 h4. Setup
 
 For setup, we recommend configliere

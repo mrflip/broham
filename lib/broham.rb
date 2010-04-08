@@ -28,9 +28,14 @@ class Broham < RightAws::ActiveSdb::Base
     select_by_role(role, :order => 'timestamp DESC')
   end
 
+  # # Returns all hosts in the given role
+  # def self.hosts role
+  #   select_all_by_role(role, :order => 'timestamp DESC')
+  # end
+
   # Returns all hosts in the given role
-  def self.hosts role
-    select_all_by_role(role, :order => 'timestamp DESC')
+  def self.hosts_like role
+    select(:all, :order => 'timestamp DESC').select{|bro| bro[:role].to_s =~ /^#{role}/ }
   end
 
   def self.host_attrs(role)
@@ -43,6 +48,15 @@ class Broham < RightAws::ActiveSdb::Base
     ahost.attributes = (host_attrs(role).merge(attrs))
     success = ahost.save
     success ? self.new(success) : false
+  end
+
+  def self.roles ip=nil
+    ip ||= my_default_ip
+    select_all_by_default_ip(ip).map{|entry| entry['role'] }
+  end
+  def self.entry_for_role role, ip=nil
+    ip ||= my_default_ip
+    select_by_role_and_default_ip(role, ip)
   end
 
   #
@@ -70,13 +84,17 @@ class Broham < RightAws::ActiveSdb::Base
     new registered_entry
   end
 
-  def self.roles ip=nil
-    ip ||= my_default_ip
-    select_all_by_default_ip(ip).map{|entry| entry['role'] }
+  #
+  # Removes all registrations for the given role wildcard
+  #
+  def self.unregister_like role
+    hosts_like(role).each(&:unregister)
   end
-  def self.entry_for_role role, ip=nil
-    ip ||= my_default_ip
-    select_by_role_and_default_ip(role, ip)
+  def self.unregister role
+    host(role).each(&:unregister)
+  end
+  def unregister
+    delete
   end
 
   # alternative syntax for #register
@@ -85,15 +103,12 @@ class Broham < RightAws::ActiveSdb::Base
   def self.yo_yo_yo!(*args) register_as_next *args ; end
   # alternative syntax for #host
   def self.sup?(*args)      host *args    ; end
-  # alternative syntax for #hosts
-  def self.sup_bros?(*args) hosts *args   ; end
-
-  #
-  # Removes all registrations for the given role
-  #
-  def self.unregister_all role
-    select_all_by_role(role).each(&:delete)
-  end
+  # alternative syntax for #hosts_like
+  def self.sup_yall?(*args) hosts_like *args   ; end
+  # alternative syntax for #unregister
+  def self.diss(*args)      unregister *args   ; end
+  # alternative syntax for #unregister_like
+  def self.fuck_all_yall(*arg) unregister_like *args ; end
 
   #
   # Registration attributes
@@ -145,13 +160,4 @@ class Broham < RightAws::ActiveSdb::Base
 
 end
 
-
-# #
-# # Metaprogramming
-# #
-# def self.new cluster
-#   cluster_klass = '::'+Extlib::Inflection.classify(cluster.to_s)
-#   module_eval(%Q{ class #{cluster_klass} < Broham::Cluster ; end })
-#   cluster_klass.constantize rescue nil
-# end
-
+Broham.establish_connection
