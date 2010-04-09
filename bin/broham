@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'broham'
+require 'broham/script'
+
+Broham.get_cluster_settings
+Broham.get_command_line_args :command, :role_name
+role_name = Settings[:role_name]
+
+
+case Settings[:command].to_s
+when 'public_ips' then puts Broham.hosts_like(role_name).map{|bro| bro[:public_ip]}.join("\n")
+else raise "Bad command #{Settings[:command]}"
+end
+

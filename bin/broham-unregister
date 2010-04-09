@@ -4,6 +4,7 @@ require 'broham'
 require 'broham/script'
 
 Broham.get_cluster_settings
+Broham.get_command_line_args :role_name
 role_name = Settings[:role_name]
 
 $stderr.puts %Q{Removing #{role_name}}
