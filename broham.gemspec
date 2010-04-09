@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{broham}
-  s.version = "0.0.5"
+  s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-04-05}
+  s.date = %q{2010-04-08}
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
-  s.executables = ["broham-diss", "broham-host", "broham-register", "broham-register_as_next", "broham-sup", "broham-unregister-all", "broham-yo"]
+  s.executables = ["broham-diss", "broham-fuck_all_yall", "broham-host", "broham-register", "broham-register_as_next", "broham-sup", "broham-unregister", "broham-unregister-like", "broham-yo"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.textile"
@@ -25,11 +25,13 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "bin/broham-diss",
+     "bin/broham-fuck_all_yall",
      "bin/broham-host",
      "bin/broham-register",
      "bin/broham-register_as_next",
      "bin/broham-sup",
-     "bin/broham-unregister-all",
+     "bin/broham-unregister",
+     "bin/broham-unregister-like",
      "bin/broham-yo",
      "broham.gemspec",
      "lib/broham.rb",
@@ -47,8 +49,6 @@ Gem::Specification.new do |s|
     "spec/broham_spec.rb",
      "spec/spec_helper.rb"
   ]
-  s.add_dependency('configliere', [">= 0.0.6"])
-  s.add_dependency('right_aws', [">= 1.10.0"])
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
