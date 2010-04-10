@@ -6,10 +6,12 @@ require 'sdb/active_sdb'
 require 'ohai'
 OHAI_INFO = Ohai::System.new unless defined?(OHAI_INFO)
 OHAI_INFO.all_plugins
-# Settings from Configliere
-require 'configliere'; Configliere.use :define
+# Settings from Configliere.
+require 'configliere'
 Settings.define :access_key,        :required => true, :description => "Amazon AWS access key ID     -- found in your AWS console (http://bit.ly/awsconsole)"
 Settings.define :secret_access_key, :required => true, :description => "Amazon AWS secret access key -- found in your AWS console (http://bit.ly/awsconsole)"
+
+::Log = Logger.new(STDERR) unless defined?(Log)
 
 #
 # Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the
@@ -121,17 +123,20 @@ class Broham < RightAws::ActiveSdb::Base
   def self.my_availability_zone() OHAI_INFO[:ec2][:availability_zone]              ; end
   def self.timestamp()            Time.now.utc.strftime("%Y%m%d%H%M%S")            ; end
 
-  def private_ip()        self['private_ip'       ] || default_ip ; end
-  def public_ip()         self['public_ip'        ] || default_ip ; end
-  def default_ip()        self['default_ip'       ] ; end
-  def fqdn()              self['fqdn'             ] ; end
-  def availability_zone() self['availability_zone'] ; end
+  def private_ip()        self['private_ip'       ].first || default_ip ; end
+  def public_ip()         self['public_ip'        ].first || default_ip ; end
+  def default_ip()        self['default_ip'       ].first ; end
+  def fqdn()              self['fqdn'             ].first ; end
+  def availability_zone() self['availability_zone'].first ; end
   def idx()
-    self['idx']
+    self['idx'].first
   end
 
-  def self.establish_connection
-    @connection ||= RightAws::ActiveSdb.establish_connection(Settings[:access_key], Settings[:secret_access_key])
+  def self.establish_connection options={}
+    options = { :logger => Log }.merge options
+    access_key = options[:access_key] || Settings[:access_key]
+    secret_access_key = options[:access_key] || Settings[:secret_access_key]
+    @connection ||= RightAws::ActiveSdb.establish_connection(access_key, secret_access_key, options)
   end
 
   # Register an nfs server share
@@ -159,5 +164,3 @@ class Broham < RightAws::ActiveSdb::Base
   end
 
 end
-
-Broham.establish_connection

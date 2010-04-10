@@ -13,6 +13,9 @@ Gem::Specification.new do |s|
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
   s.executables = ["broham", "broham-diss", "broham-fuck_all_yall", "broham-host", "broham-register", "broham-register_as_next", "broham-sup", "broham-unregister", "broham-unregister-like", "broham-yo"]
+  s.add_dependency('configliere', [">= 0.0.7"])
+  s.add_dependency('right_aws',   [">= 1.10.0"])
+  s.add_dependency('ohai',        [">= 0.0.0"])
   s.extra_rdoc_files = [
     "LICENSE",
      "README.textile"
