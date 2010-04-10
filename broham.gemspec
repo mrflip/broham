@@ -5,17 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{broham}
-  s.version = "0.0.7"
+  s.version = "0.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-04-08}
+  s.date = %q{2010-04-09}
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
   s.executables = ["broham", "broham-diss", "broham-fuck_all_yall", "broham-host", "broham-register", "broham-register_as_next", "broham-sup", "broham-unregister", "broham-unregister-like", "broham-yo"]
-  s.add_dependency('configliere', [">= 0.0.7"])
-  s.add_dependency('right_aws',   [">= 1.10.0"])
-  s.add_dependency('ohai',        [">= 0.0.0"])
   s.extra_rdoc_files = [
     "LICENSE",
      "README.textile"
@@ -47,7 +44,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mrflip/broham}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Broham: A simple, global, highly-available, none-too-bright service registry. Broham always knows where his bros are, bro.}
   s.test_files = [
     "spec/broham_spec.rb",
