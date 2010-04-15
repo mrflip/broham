@@ -1,5 +1,6 @@
-class Broham < RightAws::ActiveSdb::Base
+require 'json'
 
+class Broham < RightAws::ActiveSdb::Base
   def self.get_cluster_settings
     Configliere.use :commandline, :config_file
     Settings.read('broham.yaml')
@@ -20,5 +21,4 @@ class Broham < RightAws::ActiveSdb::Base
       exit(-1)
     end
   end
-
 end
