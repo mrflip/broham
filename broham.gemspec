@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{broham}
-  s.version = "0.0.8"
+  s.version = "0.0.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
@@ -28,9 +28,11 @@ Gem::Specification.new do |s|
      "bin/broham-diss",
      "bin/broham-fuck_all_yall",
      "bin/broham-host",
+     "bin/broham-hosts_like",
      "bin/broham-register",
      "bin/broham-register_as_next",
      "bin/broham-sup",
+     "bin/broham-sup_yall",
      "bin/broham-unregister",
      "bin/broham-unregister-like",
      "bin/broham-yo",
