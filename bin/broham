@@ -19,6 +19,7 @@ require 'broham/script'
 
 class BrohamScript
   attr_accessor :role_name, :attr
+  def command()   Settings.command ; end
   def role_name() Settings[:role_name] ; end
   def attr()      Settings[:attr]      ; end
 
@@ -68,7 +69,7 @@ class BrohamScript
   end
 
   def run
-    case Settings.command
+    case Settings.command.to_s
     when 'hosts', 'sup'
       hosts_cmd
     when 'register', 'yo'
@@ -79,8 +80,10 @@ class BrohamScript
       unregister_like_cmd
     when 'get', 'word'
       get_cmd
+    when ''
+      Settings.die "Please use one of the commands listed above"
     else
-      raise "Bad command #{Settings.command}"
+      Settings.die "Don't know how to run command #{command}"
     end
   end
 
@@ -122,10 +125,7 @@ protected
   #
   def self.check_args! *arg_names
     arg = arg_names.last
-    if Settings[arg].blank?
-      Settings.dump_help "--------------\n\nERROR: Please supply #{arg_names.join(", ")} after the command."
-      exit(-1)
-    end
+    if Settings[arg].blank? then Settings.die "ERROR: Please supply #{arg_names.join(", ")} after the command." end
   end
 
 end
