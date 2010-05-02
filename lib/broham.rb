@@ -1,15 +1,16 @@
 # SimpleDB interface
 require 'right_aws'
-RightAws::SdbInterface::API_VERSION = '2009-04-15'
 require 'sdb/active_sdb'
+require 'broham/sdb'
+
 # Machine information
 require 'ohai'
 OHAI_INFO = Ohai::System.new unless defined?(OHAI_INFO)
 OHAI_INFO.all_plugins
 # Settings from Configliere.
 require 'configliere'
-Settings.define :access_key,        :required => true, :description => "Amazon AWS access key ID     -- found in your AWS console (http://bit.ly/awsconsole)"
-Settings.define :secret_access_key, :required => true, :description => "Amazon AWS secret access key -- found in your AWS console (http://bit.ly/awsconsole)"
+Settings.define :access_key,        :required => true, :description => "Amazon AWS access key ID     -- found in your AWS console (http://bit.ly/awsconsole)", :broham => true
+Settings.define :secret_access_key, :required => true, :description => "Amazon AWS secret access key -- found in your AWS console (http://bit.ly/awsconsole)", :broham => true
 
 ::Log = Logger.new(STDERR) unless defined?(Log)
 
@@ -29,11 +30,6 @@ class Broham < RightAws::ActiveSdb::Base
   def self.host role
     select_by_role(role, :order => 'timestamp DESC')
   end
-
-  # # Returns all hosts in the given role
-  # def self.hosts role
-  #   select_all_by_role(role, :order => 'timestamp DESC')
-  # end
 
   # Returns all hosts in the given role
   def self.hosts_like role
@@ -110,7 +106,7 @@ class Broham < RightAws::ActiveSdb::Base
   # alternative syntax for #unregister
   def self.diss(*args)      unregister *args   ; end
   # alternative syntax for #unregister_like
-  def self.fuck_all_yall(*arg) unregister_like *args ; end
+  def self.fuck_all_yall(*args) unregister_like *args ; end
 
   #
   # Registration attributes

@@ -64,6 +64,13 @@ h4. Commandline Interface
   $ broham-unregister-all chad nfs_server
   Removing nfs_server from chad cluster
   {"timestamp":["20100405093238"],"fqdn":["nfs.infochimps.org"],"client_path":["/home"],"server_path":["/home"],"role":["nfs_server"],"private_ip":["10.123.156.231"],"default_ip":["10.123.156.231"],"public_ip":["104.136.251.50"]}
+
+  # Alternative interface:
+  broham-sup host               # show host
+  broham-sup_yall hosts         # show all hosts matching the given (start-of-string-anchored) regex
+  broham-yo host                # register as given host
+  broham-diss host              # unregister given host
+  broham-fuck_all_yall hosts_re # unregister all hosts matching the given (start-of-string-anchored) regex
 </code></pre>
 
 h4. IRB Usage

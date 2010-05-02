@@ -3,13 +3,132 @@ require 'rubygems'
 require 'broham'
 require 'broham/script'
 
-Broham.get_cluster_settings
-Broham.get_command_line_args :command, :role_name
-role_name = Settings[:role_name]
+[
+  # ['sup',             '', '(alias for hosts)'],
+  # ['yo',              '', '(alias for register)'],
+  # ['diss',            '', '(alias for unregister)'],
+  # ['fuck_all_yall',   '', '(alias for unregister_like)'],
+  # ['word',            '', '(alias for get)'],
+  #
+  ['hosts',           'role_pattern',                'Unregister all hosts prefixed by role_pattern'],
+  ['register',        'role [--extra_param=val...]', 'Registers this machine for the given role; stuff in any leftover params'],
+  ['unregister',      'role',                        'Unregister that role'],
+  ['unregister_like', 'role_pattern',                'Unregister all hosts prefixed by role_pattern'],
+  ['get',             'role_pattern attr',           'show attr for all hosts prefixed by role_pattern']
+].each{|cmd| Configliere::COMMANDS << cmd }
 
+class BrohamScript
+  attr_accessor :role_name, :attr
+  def role_name() Settings[:role_name] ; end
+  def attr()      Settings[:attr]      ; end
 
-case Settings[:command].to_s
-when 'public_ips' then puts Broham.hosts_like(role_name).map{|bro| bro[:public_ip]}.join("\n")
-else raise "Bad command #{Settings[:command]}"
+  def hosts_cmd
+    BrohamScript.get_commandline_predicates :role_name
+    $stderr.puts %Q{Listing hosts like #{role_name}}
+    dump_table Broham.hosts_like(role_name)
+  end
+
+  def register_cmd
+    # Settings.define :set, :description => %Q{Any arg prefixed with "--set" will become an extra arg to register: 'broham-register foo --set-path=/path/to/foo' sets :path => '/path/to/foo' as an additional attribute}, :type => Hash
+    broham_args = Settings[:set]||{}
+    BrohamScript.get_commandline_predicates :role_name
+    $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
+    new_bro = Broham.register(role_name)
+    dump_table [new_bro]
+  end
+
+  def register_as_next_cmd
+    # Settings.define :set, :description => %Q{Any arg prefixed with "--set" will become an extra arg to register: 'broham-register foo --set-path=/path/to/foo' sets :path => '/path/to/foo' as an additional attribute}, :type => Hash
+    broham_args = Settings[:set]||{}
+    BrohamScript.get_commandline_predicates :role_name
+    $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
+    new_bro = Broham.register_as_next(role_name)
+    dump_table [new_bro]
+  end
+
+  def unregister_cmd
+    BrohamScript.get_commandline_predicates :role_name
+    $stderr.puts %Q{Unregistering #{role_name}}
+    dead_bro = Broham.unregister(role_name)
+    dump_table [dead_bro]
+  end
+
+  def unregister_like_cmd
+    BrohamScript.get_commandline_predicates :role_name
+    $stderr.puts %Q{Unregistering all hosts like #{role_name}}
+    dump_table Broham.unregister_like role_name
+  end
+
+  def get_cmd
+    BrohamScript.get_commandline_predicates :role_name, :attr
+    $stderr.puts %Q{Getting #{attr} for hosts like #{role_name}}
+    Broham.hosts_like(role_name).map do |bro|
+      $stdout.puts bro[attr]
+    end
+  end
+
+  def run
+    case Settings.command
+    when 'hosts', 'sup'
+      hosts_cmd
+    when 'register', 'yo'
+      register_cmd
+    when 'unregister', 'diss'
+      unregister_cmd
+    when 'unregister_like', 'fuck_all_yall'
+      unregister_like_cmd
+    when 'get', 'word'
+      get_cmd
+    else
+      raise "Bad command #{Settings.command}"
+    end
+  end
+
+protected
+
+  # Dump a list of hashes as a formatted, equally-spaced table
+  def dump_table hosts_list
+    attr_lens = {}
+    # find all used fields, and their width
+    hosts_list.each do |host|
+      host.to_hash.each{|k,v| attr_lens[k] = [v.to_s.length, attr_lens[k].to_i].max }
+    end
+    # account for length of attr titles
+    attr_lens.each{|attr,len| attr_lens[attr] = [len, attr.length].max }
+    # take attrs in order, putting role first (and excluding id)
+    attrs = ['role', (attr_lens.keys - ['role', 'id']).sort].flatten
+    $stderr.puts attrs.map{|attr| "%-#{attr_lens[attr]}s"%attr}.join("\t")
+    hosts_list.each do |host|
+      $stdout.puts attrs.map{|attr| "%-#{attr_lens[attr]}s"%host[attr]}.join("\t")
+    end
+  end
+
+  # Loads defaults
+  def self.get_cluster_settings
+    Settings.read(ENV['HOME']+'/.poolparty/poolparty.yaml')
+    Settings.resolve!
+    Broham.establish_connection
+  end
+
+  # takes a list of attributes and pops each, in turn, from the commandline
+  # (the Settings.rest list)
+  def self.get_commandline_predicates *arg_names
+    arg_names.each do |arg_name|
+      Settings[arg_name] = Settings.rest.shift
+    end
+    check_args! *arg_names
+  end
+
+  #
+  def self.check_args! *arg_names
+    arg = arg_names.last
+    if Settings[arg].blank?
+      Settings.dump_help "--------------\n\nERROR: Please supply #{arg_names.join(", ")} after the command."
+      exit(-1)
+    end
+  end
+
 end
 
+BrohamScript.get_cluster_settings
+BrohamScript.new.run
