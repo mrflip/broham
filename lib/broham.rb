@@ -117,7 +117,7 @@ class Broham < RightAws::ActiveSdb::Base
   def self.my_default_ip()        OHAI_INFO[:ipaddress]                            ; end
   def self.my_fqdn()              OHAI_INFO[:fqdn]                                 ; end
   def self.my_availability_zone() OHAI_INFO[:ec2][:availability_zone]              ; end
-  def self.timestamp()            Time.now.utc.strftime("%Y%m%d%H%M%S")            ; end
+  def self.timestamp()            Time.now.utc.strftime("%Y%m%d%H%M%SZ")            ; end
 
   def private_ip()        self['private_ip'       ].first || default_ip ; end
   def public_ip()         self['public_ip'        ].first || default_ip ; end
