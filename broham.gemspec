@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{broham}
-  s.version = "0.0.11"
+  s.version = "0.0.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
   s.date = %q{2010-05-04}
   s.description = %q{Bro! Broham always knows where his bros are, bro. Using broham, a newly-created cloud machine can annouce its availability for a certain role ("nfs_server" or "db_slave-2"), allowing any other interested nodes to discover its public_ip, private_ip, etc. See also: http://j.mp/amongbros}
   s.email = %q{flip@infochimps.org}
-  s.executables = ["broham", "broham-diss", "broham-fuck_all_yall", "broham-get", "broham-hosts", "broham-register", "broham-sup", "broham-unregister", "broham-unregister_like", "broham-word", "broham-yo"]
+  s.executables = ["broham", "broham-diss", "broham-fuck_all_yall", "broham-get", "broham-hosts", "broham-register", "broham-register_as_next", "broham-sup", "broham-unregister", "broham-unregister_like", "broham-word", "broham-yo", "broham-yo_yo_yo"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.textile"
@@ -30,11 +30,13 @@ Gem::Specification.new do |s|
      "bin/broham-get",
      "bin/broham-hosts",
      "bin/broham-register",
+     "bin/broham-register_as_next",
      "bin/broham-sup",
      "bin/broham-unregister",
      "bin/broham-unregister_like",
      "bin/broham-word",
      "bin/broham-yo",
+     "bin/broham-yo_yo_yo",
      "broham.gemspec",
      "lib/broham.rb",
      "lib/broham/script.rb",
