@@ -130,8 +130,8 @@ class Broham < RightAws::ActiveSdb::Base
 
   def self.establish_connection options={}
     options = { :logger => Log }.merge options
-    access_key = options[:access_key] || Settings[:access_key]
-    secret_access_key = options[:access_key] || Settings[:secret_access_key]
+    access_key        = options[:access_key]        || Settings[:access_key]
+    secret_access_key = options[:secret_access_key] || Settings[:secret_access_key]
     @connection ||= RightAws::ActiveSdb.establish_connection(access_key, secret_access_key, options)
   end
 
