@@ -34,7 +34,7 @@ class BrohamScript
     broham_args = Settings[:set]||{}
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
-    new_bro = Broham.register(role_name)
+    new_bro = Broham.register(role_name, broham_args)
     dump_table [new_bro]
   end
 
@@ -43,7 +43,7 @@ class BrohamScript
     broham_args = Settings[:set]||{}
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
-    new_bro = Broham.register_as_next(role_name)
+    new_bro = Broham.register_as_next(role_name, broham_args)
     dump_table [new_bro]
   end
 
@@ -78,6 +78,8 @@ class BrohamScript
       unregister_cmd
     when 'unregister_like', 'fuck_all_yall'
       unregister_like_cmd
+    when 'register_as_next'
+      register_as_next_cmd
     when 'get', 'word'
       get_cmd
     when ''
