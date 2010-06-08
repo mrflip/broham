@@ -2,6 +2,7 @@
 require 'right_aws'
 require 'sdb/active_sdb'
 require 'broham/sdb'
+require 'broham/cluster'
 
 # Machine information
 require 'ohai'
@@ -129,10 +130,11 @@ class Broham < RightAws::ActiveSdb::Base
   end
 
   def self.establish_connection options={}
+    return @connection if @connection
     options = { :logger => Log }.merge options
     access_key        = options[:access_key]        || Settings[:access_key]
     secret_access_key = options[:secret_access_key] || Settings[:secret_access_key]
-    @connection ||= RightAws::ActiveSdb.establish_connection(access_key, secret_access_key, options)
+    @connection = RightAws::ActiveSdb.establish_connection(access_key, secret_access_key, options)
   end
 
   # Register an nfs server share
