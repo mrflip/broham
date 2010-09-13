@@ -3,6 +3,7 @@ require 'right_aws'
 require 'sdb/active_sdb'
 require 'broham/sdb'
 require 'broham/cluster'
+require 'set'
 
 # Machine information
 require 'ohai'
@@ -28,59 +29,33 @@ Settings.define :secret_access_key, :required => true, :description => "Amazon A
 #
 class Broham < RightAws::ActiveSdb::Base
   # Returns the last-registered host in the given role
-  def self.host role
+  def self.latest role
     select_by_role(role, :order => 'timestamp DESC')
   end
 
   # Returns all hosts in the given role
-  def self.hosts_like role
+  def self.list_like role
     select(:all, :order => 'timestamp DESC').select{|bro| bro[:role].to_s =~ /^#{role}/ }
   end
 
-  def self.host_attrs(role)
-    { :role => role, :timestamp => timestamp,
-      :private_ip => my_private_ip, :public_ip => my_public_ip, :default_ip => my_default_ip, :fqdn => my_fqdn  }
+  #
+  def self.roles name=nil
+    name ||= my_default_ip
+    select_all_by_name(name)
+  end
+  # s
+  def self.entry_for_role role, name=nil
+    name ||= my_default_ip
+    select_by_role_and_name(role, name) || new(:name => name, :role => role)
   end
 
-  def self.register role, attrs={}
-    ahost = host(role) || new
-    ahost.attributes = (host_attrs(role).merge(attrs))
-    success = ahost.save
-    success ? self.new(success) : false
-  end
-
-  def self.roles ip=nil
-    ip ||= my_default_ip
-    select_all_by_default_ip(ip).map{|entry| entry['role'] }
-  end
-  def self.entry_for_role role, ip=nil
-    ip ||= my_default_ip
-    select_by_role_and_default_ip(role, ip)
-  end
-
-  #
-  # Enlists as the next among many machines filling the given role.
-  #
-  # This is just a simple counter: it doesn't check whether the machine is
-  # already enlisted under a different index, or whether there are missing
-  # indices.
-  #
-  # It uses conditional save to be sure that the count is consistent
-  #
-  def self.register_as_next role, attrs={}
-    my_idx = 0
-    if (registered_entry = entry_for_role(role)) then return registered_entry end
-    100.times do
-      ahost = host(role) || new
-      current_max_idx  = ahost[:idx] && ahost[:idx].first
-      my_idx           = current_max_idx ? current_max_idx.to_i + 1 : 0
-      ahost.attributes = host_attrs(role).merge({ :idx => my_idx.to_s }.merge(attrs))
-      expected         = current_max_idx ? {:idx => (current_max_idx.to_i).to_s} : {}
-      registered_entry = ahost.save_if(expected)
-      break if registered_entry
-    end
-    register role+'-'+my_idx.to_s, { :idx => my_idx }.merge(attrs)
-    new registered_entry
+  def self.register role, name=nil, extra_attrs={}
+    establish_connection
+    bro = entry_for_role(role, name)
+    bro.attributes = bro.attributes.merge(host_attrs.merge(extra_attrs))
+    bro.save
+    role_idxs!(role)
+    bro
   end
 
   #
@@ -89,29 +64,66 @@ class Broham < RightAws::ActiveSdb::Base
   def self.unregister_like role
     hosts_like(role).each(&:unregister)
   end
-  def self.unregister role
+  #
+  def self.unregister role, name
     host(role).each(&:unregister)
   end
   def unregister
     delete
   end
 
+  #
+  # alternative interface
+  #
+
   # alternative syntax for #register
-  def self.yo!(*args)       register *args ; end
-  # alternative syntax for #register_as_next
-  def self.yo_yo_yo!(*args) register_as_next *args ; end
+  def self.yo!(*args)           register *args        ; end
   # alternative syntax for #host
-  def self.sup?(*args)      host *args    ; end
+  def self.sup?(*args)          host *args            ; end
   # alternative syntax for #hosts_like
-  def self.sup_yall?(*args) hosts_like *args   ; end
+  def self.sup_yall?(*args)     hosts_like *args      ; end
   # alternative syntax for #unregister
-  def self.diss(*args)      unregister *args   ; end
+  def self.diss(*args)          unregister *args      ; end
   # alternative syntax for #unregister_like
   def self.fuck_all_yall(*args) unregister_like *args ; end
 
   #
+  # Do an ok job of consistently assigning indices.
+  #
+  # * nodes with an idx retain that idx.
+  # * nodes without an idx acquire the lowest unassigned idx,
+  #   with lowest timestamp choosing first
+  #
+  # this isn't perfectly consistent, but isn't terrible.
+  #
+  def self.role_idxs! role
+    bros = select_all_by_role(role, :order => 'timestamp ASC')
+    avail_idxes = (0 .. bros.length).to_set
+    need_idxes  = []
+    indexed     = {}
+    bros.each do |bro|
+      if bro.idx
+        indexed[bro.idx] = bro.id
+        avail_idxes.delete(bro.idx)
+      else
+        need_idxes << bro
+      end
+    end
+    need_idxes.zip(avail_idxes.sort).each do |bro,idx|
+      indexed[idx] = bro.id
+      bro['idx']   = idx
+      bro.save
+    end
+    indexed.invert
+  end
+
+  #
   # Registration attributes
   #
+
+  def self.host_attrs
+    { :timestamp => timestamp, :private_ip => my_private_ip, :public_ip => my_public_ip, :default_ip => my_default_ip, :fqdn => my_fqdn  }.to_mash
+  end
 
   def self.my_private_ip()        OHAI_INFO[:cloud][:private_ips].first rescue nil ; end
   def self.my_public_ip()         OHAI_INFO[:cloud][:public_ips].first  rescue nil ; end
@@ -126,8 +138,13 @@ class Broham < RightAws::ActiveSdb::Base
   def fqdn()              self['fqdn'             ].first ; end
   def availability_zone() self['availability_zone'].first ; end
   def idx()
-    self['idx'].first
+    idx = [self['idx']].flatten.first
+    idx.blank? ? nil : idx.to_i
   end
+
+  #
+  # plumbing
+  #
 
   def self.establish_connection options={}
     return @connection if @connection
@@ -136,6 +153,10 @@ class Broham < RightAws::ActiveSdb::Base
     secret_access_key = options[:secret_access_key] || Settings[:secret_access_key]
     @connection = RightAws::ActiveSdb.establish_connection(access_key, secret_access_key, options)
   end
+
+  #
+  # Convenience for certain roles
+  #
 
   # Register an nfs server share
   def self.register_nfs_share server_path, client_path=nil, role='nfs_server'
@@ -149,12 +170,9 @@ class Broham < RightAws::ActiveSdb::Base
     [nfs_server.private_ip, nfs_server[:server_path]].join(':')
   end
 
-  # Hadoop: master jobtracker node
-  def self.hadoop_jobtracker(role='hadoop_jobtracker') ; host(role) ; end
-  # Hadoop: master namenode
-  def self.hadoop_namenode(  role='hadoop_namenode')   ; host(role) ; end
-  # Hadoop: cloudera desktop node
-  def self.cloudera_desktop( role='cloudera_desktop')  ; host(role) ; end
+  #
+  # Pretty print
+  #
 
   def to_hash() attributes ; end
   def to_pretty_json

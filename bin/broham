@@ -26,7 +26,7 @@ class BrohamScript
   def hosts_cmd
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Listing hosts like #{role_name}}
-    dump_table Broham.hosts_like(role_name)
+    BrohamScript.dump_table Broham.hosts_like(role_name)
   end
 
   def register_cmd
@@ -35,7 +35,7 @@ class BrohamScript
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
     new_bro = Broham.register(role_name, broham_args)
-    dump_table [new_bro]
+    BrohamScript.dump_table [new_bro]
   end
 
   def register_as_next_cmd
@@ -44,20 +44,20 @@ class BrohamScript
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Registering #{role_name} -- #{broham_args}}
     new_bro = Broham.register_as_next(role_name, broham_args)
-    dump_table [new_bro]
+    BrohamScript.dump_table [new_bro]
   end
 
   def unregister_cmd
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Unregistering #{role_name}}
     dead_bro = Broham.unregister(role_name)
-    dump_table [dead_bro]
+    BrohamScript.dump_table [dead_bro]
   end
 
   def unregister_like_cmd
     BrohamScript.get_commandline_predicates :role_name
     $stderr.puts %Q{Unregistering all hosts like #{role_name}}
-    dump_table Broham.unregister_like role_name
+    BrohamScript.dump_table Broham.unregister_like role_name
   end
 
   def get_cmd
@@ -90,23 +90,6 @@ class BrohamScript
   end
 
 protected
-
-  # Dump a list of hashes as a formatted, equally-spaced table
-  def dump_table hosts_list
-    attr_lens = {}
-    # find all used fields, and their width
-    hosts_list.each do |host|
-      host.to_hash.each{|k,v| attr_lens[k] = [v.to_s.length, attr_lens[k].to_i].max }
-    end
-    # account for length of attr titles
-    attr_lens.each{|attr,len| attr_lens[attr] = [len, attr.length].max }
-    # take attrs in order, putting role first (and excluding id)
-    attrs = ['role', (attr_lens.keys - ['role', 'id']).sort].flatten
-    $stderr.puts attrs.map{|attr| "%-#{attr_lens[attr]}s"%attr}.join("\t")
-    hosts_list.each do |host|
-      $stdout.puts attrs.map{|attr| "%-#{attr_lens[attr]}s"%host[attr]}.join("\t")
-    end
-  end
 
   # Loads defaults
   def self.get_cluster_settings

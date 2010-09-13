@@ -49,6 +49,8 @@ Alternate interface:
 
 h4. Commandline Interface
 
+bq. Like Broseph Stalin, you are leading the way to the dictatorship of the broletariate. It is truly revbrolutionary. Like the Bro v. Wade of our generation. You brobliterate the enemy from the very peak of Mt. Brolympus. That's some shit. That's brolific. But that's the kind of bro you are. -- "Zach Caldwell":http://j.mp/amongbros
+
 <pre><code>
   $ broham-register chad nfs_server --set-server_path=/home --set-client_path=/home
   Registering as nfs_server in chad cluster, with {:server_path=>"/home", :client_path=>"/home"}
@@ -85,31 +87,30 @@ h4. IRB Usage
     Broham.unregister_like 'gibbon-slave'
 </code></pre>
 
-h4. Setup
+h2. Design
 
-For setup, we recommend configliere
-    
-<pre><code>
-  require 'configliere'
-  Configliere.use :config_file
-  Settings.read 'broham.yaml'; Settings.resolve!
-</code></pre>
+h3. Verbs
 
-h3. 
-
-bq. Like Broseph Stalin, you are leading the way to the dictatorship of the broletariate. It is truly revbrolutionary. Like the Bro v. Wade of our generation. You brobliterate the enemy from the very peak of Mt. Brolympus. That's some shit. That's brolific. But that's the kind of bro you are. -- "Zach Caldwell":http://j.mp/amongbros
+* 'Get latest Provider'		GET    /service/:service
+* 'Get Providers'		GET    /service/:service/~
+* 'Get Providers Matching'	GET    /service/~:service
+* 'Register to provide'		PUT    /service/:service/:node_id
+* 'Register as one'		POST   /service/:service/:node_id
+* 'Invalidate'			DELETE /service/:service/:node_id
+* 'Invalidate'			DELETE /service/~:service
 
 
-h3. Warnings!
+  timestamp     URI     [... anything else you like ...]
 
-Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the SDB_API_VERSION environment variable to '2009-04-15':
 
-<pre><code>
-  export SDB_API_VERSION='2009-04-15'
-</code></pre>
-
-For @register_as_next@, you'll need a version of right_aws that supports conditional puts: "http://github.com/mrflip/right_aws":http://github.com/mrflip/right_aws
   
+
+h2. Moreover
+
+h3. Similar projects
+
+* http://github.com/linkedin-sna/norbert
+
 
 h3. Note on Patches/Pull Requests
 

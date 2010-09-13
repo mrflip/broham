@@ -1,0 +1,10 @@
+  
+h3. Warnings!
+
+Make sure you are using a recent (>= 1.11,0) version of right_aws, and set the SDB_API_VERSION environment variable to '2009-04-15':
+
+<pre><code>
+  export SDB_API_VERSION='2009-04-15'
+</code></pre>
+
+For @register_as_next@, you'll need a version of right_aws that supports conditional puts: "http://github.com/mrflip/right_aws":http://github.com/mrflip/right_aws
